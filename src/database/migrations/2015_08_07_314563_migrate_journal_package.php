@@ -6,11 +6,16 @@ use Illuminate\Database\Migrations\Migration;
 class MigrateJournalPackage extends Migration
 {
 
+    private $prefix = NULL;
+    private $admin_prefix = NULL;
+
     public function __construct()
     {
         // Get the prefix
         $this->prefix = Config::get('journal.prefix');
+        echo $this->prefix;
         $this->admin_prefix = Config::get('admin.prefix');
+        echo $this->admin_prefix;
     }
 
     /**
@@ -23,7 +28,19 @@ class MigrateJournalPackage extends Migration
         $prefix       = $this->prefix;
         $admin_prefix = $this->admin_prefix;
 
-        Schema::create( $prefix.'posts', function ( Blueprint $table ) {
+        Schema::create( $prefix.'post_categories', function( Blueprint $table ) use( $prefix ) {
+            // Category Info
+            $table->increments( 'id' );
+            $table->integer( 'status' )->unsigned();
+            $table->string( 'name' );
+            $table->longtext( 'description' );
+
+            // Timestamps
+            $table->timestamps();
+            $table->softDeletes();
+        } );
+
+        Schema::create( $prefix.'posts', function( Blueprint $table ) use( $prefix, $admin_prefix ) {
             // Product Info
             $table->increments( 'id' );
             $table->integer( 'status' )->unsigned();
@@ -42,7 +59,7 @@ class MigrateJournalPackage extends Migration
             $table->softDeletes();
         } );
 
-        Schema::create( $prefix.'post_images', function( Blueprint $table ) {
+        Schema::create( $prefix.'post_images', function( Blueprint $table ) use( $prefix ) {
             // Image Info
             $table->increments( 'id' );
             $table->string( 'caption' );
@@ -57,19 +74,6 @@ class MigrateJournalPackage extends Migration
             $table->timestamps();
             $table->softDeletes();
         } );
-
-        Schema::create( $prefix.'post_categories', function( Blueprint $table ) {
-            // Category Info
-            $table->incerements( 'id' );
-            $table->integer( 'status' )->unsigned();
-            $table->string( 'name' );
-            $table->longtext( 'description' );
-
-            // Timestamps
-            $table->timestamps();
-            $table->softDeletes();
-
-        } );
     }
 
     /**
@@ -79,8 +83,10 @@ class MigrateJournalPackage extends Migration
      */
     public function down()
     {
-        Schema::drop( 'posts' );
-        Schema::drop( 'post_images' );
-        Schema::drop( 'post_categories' );
+        $prefix       = $this->prefix;
+
+        Schema::drop( $prefix.'posts' );
+        Schema::drop( $prefix.'post_images' );
+        Schema::drop( $prefix.'post_categories' );
     }
 }

@@ -2,7 +2,7 @@
 
 @section( 'sidebar' )
   <aside class="admin--sidebar journal--sidebar">
-    <a href="/" class="admin--sidebar-logo">Market</a>
+    @include( 'admin::includes/module_dropdown', [ 'selected' => 'journal' ] )
 
     <nav class="admin--sidebar-menu">
       <ul>
