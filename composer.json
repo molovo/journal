@@ -1,6 +1,6 @@
 {
   "name": "molovo/journal",
-  "description": "A content management module for Laravel 5.1+",
+  "description": "A content management module for molovo/admin",
   "keywords": [
     "molovo",
     "journal"
